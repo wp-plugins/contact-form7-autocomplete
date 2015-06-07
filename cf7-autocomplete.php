@@ -13,12 +13,12 @@ if ( !function_exists( 'add_action' ) ) {
 	exit;
 }
 
-define('TB_AUTOCOMPLETE_VER', '1.0.5');	
+define('TB_AUTOCOMPLETE_VER', '1.1.0');	
 define('TB_AUTOCOMPLETE_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('TB_AUTOCOMPLETE_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
 class TB_Autocomplete{	
-	private $fields, $name;
+	private $fields, $names;
 
 	public function __construct() {
 		add_action('init', array($this, 'lib_load'), 10);
@@ -34,16 +34,16 @@ class TB_Autocomplete{
 	}
 
 	 public function tb_values(){		 	
-		$source = array_filter( $this->fields ); 		
+		$source = array_filter($this->fields); 		
 	?>
 		<script type="text/javascript">
-
-		    jQuery(document).ready(function($) {
-		        jQuery("[name='<?php echo $this->name; ?>']").autocomplete({
-		            source: <?php echo json_encode( $source ); ?>
-		        })
+		    jQuery(document).ready(function($) {						    	
+				<?php foreach ($this->fields as $key => $value) { ?>						
+			        $("[name='<?php echo $key ?>']").autocomplete({
+			            source: <?php echo json_encode($value); ?>
+			        });						
+				<?php } ?>		  		    			    			    	
 		    });
-
 		</script>
 	<?php }	
 
@@ -75,7 +75,7 @@ class TB_Autocomplete{
 		
 	}	
 
-	public function shortcode_handler( $tag ) {
+	public function shortcode_handler( $tag ) {				
 		$tag = new WPCF7_Shortcode( $tag );
 		if ( empty( $tag->name ) )
 			return '';
@@ -105,8 +105,8 @@ class TB_Autocomplete{
 		$atts['type']	= 'text';
 		$atts['name']	= $tag->name;
 		$atts = wpcf7_format_atts( $atts );
-        $this->fields   = $tag->values;
-        $this->name     = $tag->name;          
+        $this->fields[$tag->name]   = $tag->values;
+        $this->names[]  = $tag->name;                  
 
 		$html = sprintf(
 			'<span class="wpcf7-form-control-wrap %1$s"><input %2$s />%3$s</span>',
@@ -114,7 +114,7 @@ class TB_Autocomplete{
 		return $html;
 	}	
 
-	public function tb_filter_validation( $result, $tag ) {
+	public function tb_filter_validation( $result, $tag ) {		
 		$tag = new WPCF7_Shortcode( $tag );
 		$name = $tag->name;
 		$value = isset( $_POST[$name] )
