@@ -4,7 +4,7 @@ Plugin Name: Contact Form7: Autocomplete
 Plugin URI: http://wordpress.org/plugins/cf7-autocomplete-autocomplete/
 Description: This is a plugin add field Autocomplete for Contact Form 7
 Author: Tran Bang
-Version: 1.0.5
+Version: 1.1.0
 Author URI: http://tranbang.net
 */
 
