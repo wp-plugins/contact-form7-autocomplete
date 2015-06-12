@@ -10,6 +10,8 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Enables adding a date field for Contact Form 7 Wordpress Plugin using jQuery UI\'s
 autocomplete
 
+<strong>Requires Contact form 7 4.2 or higher</strong>
+
 == Installation ==
 Please follow the [standard installation procedure for WordPress plugins](http://codex.wordpress.org/Managing_Plugins#Installing_Plugins).
 
