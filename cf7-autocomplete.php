@@ -4,7 +4,7 @@ Plugin Name: Contact Form7: Autocomplete
 Plugin URI: http://wordpress.org/plugins/cf7-autocomplete-autocomplete/
 Description: This is a plugin add field Autocomplete for Contact Form 7
 Author: Tran Bang
-Version: 1.2.0
+Version: 1.2.1
 Author URI: http://tranbang.net
 */
 
@@ -13,7 +13,7 @@ if ( !function_exists( 'add_action' ) ) {
 	exit;
 }
 
-define('TB_AUTOCOMPLETE_VER', '1.2.0');	
+define('TB_AUTOCOMPLETE_VER', '1.2.1');	
 define('TB_AUTOCOMPLETE_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('TB_AUTOCOMPLETE_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
@@ -34,7 +34,8 @@ class TB_Autocomplete{
 	}
 
 	 public function tb_values(){		 	
-		$source = array_filter($this->fields); 		
+		if(!empty($this->fields)) {
+		$source = array_filter($this->fields); 	
 	?>
 		<script type="text/javascript">
 		    jQuery(document).ready(function($) {						    	
@@ -46,6 +47,7 @@ class TB_Autocomplete{
 		    });
 		</script>
 	<?php }	
+	}
 
 	public function lib_load(){
 		require_once TB_AUTOCOMPLETE_PLUGIN_DIR.'cf7-autocomplete-field.php';		
@@ -115,23 +117,15 @@ class TB_Autocomplete{
 	public function tb_filter_validation( $result, $tag ) {		
 		$tag = new WPCF7_Shortcode( $tag );
 		$name = $tag->name;
+
 		$value = isset( $_POST[$name] )
 			? trim( wp_unslash( strtr( (string) $_POST[$name], "\n", " " ) ) )
 			: '';
 
-		if ( '' == $value ) {
-			$result['valid'] = false;
-			$result['reason'][$name] = wpcf7_get_message( 'invalid_required' );
+		if ( $tag->is_required() && '' == $value) {
+			$result->invalidate( $tag, wpcf7_get_message( 'invalid_required' ) );
 		}
-
-		if ( isset( $result['reason'][$name] ) && $id = $tag->get_id_option() ) {
-			$result['idref'][$name] = $id;
-		}
-
-        if ( !in_array( $value, $tag->values ) ) {
-            $result['valid'] = false;
-            $result['reason'][$name] = wpcf7_get_message( 'invalid_required' );
-        }
+		
 		return $result;
 	}	
 
@@ -143,8 +137,8 @@ class TB_Autocomplete{
 			),
 
 			'invalid_required' => array(
-			    'description' => 'You need to give this a value.',
-			    'default' => 'You need to give this a value.'
+			    'description' => 'Please fill in the required field.',
+			    'default' => 'Please fill in the required field.'
 			) ) );
 	}		
 }
