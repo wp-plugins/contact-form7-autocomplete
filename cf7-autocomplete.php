@@ -64,7 +64,7 @@ class TB_Autocomplete{
 	}	
 
 	public function tb_shortcode_add() {		
-		wpcf7_add_shortcode(array( 'autocomplete', 'autocomplete*'), array($this, 'shortcode_handler'), true);
+		wpcf7_add_form_tag(array( 'autocomplete', 'autocomplete*'), array($this, 'shortcode_handler'), true);
 	}	
 
 	public function activation_hook() {
